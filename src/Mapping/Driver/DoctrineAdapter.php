@@ -9,6 +9,8 @@
 
 namespace Prezent\Doctrine\Translatable\Mapping\Driver;
 
+use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\ORM\Mapping\Driver\SimplifiedXmlDriver;
 use Doctrine\ORM\Mapping\Driver\SimplifiedYamlDriver;
 use Doctrine\Persistence\ManagerRegistry;
@@ -96,6 +98,11 @@ class DoctrineAdapter
             if (class_exists($class)) {
                 return new $class($omDriver->getLocator());
             }
+        }
+
+        if($omDriver instanceof AttributeDriver){
+            $reader = new AnnotationReader();
+            return new AnnotationDriver($reader);
         }
 
         throw new \InvalidArgumentException('Cannot adapt Doctrine driver of class ' . get_class($omDriver));
